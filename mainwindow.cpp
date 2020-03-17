@@ -3,6 +3,7 @@
 #include "maincontroller.h"
 #include "network/networkmanager.h"
 #include <QMessageBox>
+#include <QDebug>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -32,8 +33,10 @@ void MainWindow::on_submit_form_clicked()
         QMessageBox::information(this, "Incorrect information", "Username or password field are empty?");
     }
 
-    controller->set_url("https://google.com");
+    controller->set_url("https://postman-echo.com/post");
+    controller->manager()->set_post_fields("foo1=bar1&foo2=bar2");
     controller->manager()->skip_ssl();
     controller->submit();
+    qInfo() << controller->manager()->Response();
 
 }

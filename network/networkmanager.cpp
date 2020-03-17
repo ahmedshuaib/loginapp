@@ -1,9 +1,11 @@
 #include "networkmanager.h"
 #include <stdio.h>
 #include <QDebug>
+#include <QString>
 
-NetworkManager::NetworkManager(QObject *parent)
+NetworkManager::NetworkManager(QObject *parent) : response(nullptr)
 {
+    response = new std::string;
     curl = curl_easy_init();
 }
 
@@ -20,6 +22,17 @@ void NetworkManager::set_url(const QString &url)
     }
 }
 
+void NetworkManager::set_post_fields(const char *post_fields)
+{
+    curl_easy_setopt(curl, CURLOPT_POSTFIELDS, post_fields);
+    curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE, (long)strlen(post_fields));
+}
+
+void NetworkManager::set_method(const QString &method)
+{
+    curl_easy_setopt(curl, CURLOPT_CUSTOMREQUEST, method.toLocal8Bit().constData());
+}
+
 void NetworkManager::skip_ssl()
 {
     curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0L);
@@ -28,6 +41,7 @@ void NetworkManager::skip_ssl()
 
 void NetworkManager::execute()
 {
+    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, reponse_writer);
     res = curl_easy_perform(curl);
     if(res != CURLE_OK) {
         fprintf(stderr,  "curl_easy_perform() failed: %s\n",
@@ -35,7 +49,25 @@ void NetworkManager::execute()
     }
 }
 
+QString NetworkManager::Response()
+{
+    return response_;
+}
+
 void NetworkManager::DoWork()
 {
     execute();
+}
+
+int NetworkManager::reponse_writer(char *data, size_t size, size_t nmemb, std::string *buffer_in)
+{
+    int rsize = 0;
+    QByteArray array;
+    if(buffer_in != nullptr) {
+        array.append(data);
+        qInfo() << array;
+        rsize = size * nmemb;
+        return rsize;
+    }
+    return rsize;
 }
