@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "maincontroller.h"
+#include "network/networkmanager.h"
 #include <QMessageBox>
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -31,5 +32,8 @@ void MainWindow::on_submit_form_clicked()
         QMessageBox::information(this, "Incorrect information", "Username or password field are empty?");
     }
 
+    controller->set_url("https://google.com");
+    controller->manager()->skip_ssl();
+    controller->submit();
 
 }

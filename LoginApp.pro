@@ -41,4 +41,4 @@ FORMS += \
 INCLUDEPATH += $$PWD/inc
 DEPENDPATH += $$PWD/inc
 
-win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$PWD/lib/libcurl.a
+win32:LIBS += $$_PRO_FILE_PWD_/lib/libcurl.dll \
