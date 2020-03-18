@@ -1,4 +1,4 @@
-#ifndef NETWORKMANAGER_H
+﻿#ifndef NETWORKMANAGER_H
 #define NETWORKMANAGER_H
 
 #include <QObject>
@@ -16,9 +16,11 @@ public:
     void set_post_fields(const char *post_fields);
     void set_method(const QString &method);
     void execute();
-    QString Response();
+    QByteArray Response();
 
 signals:
+    void signal_response_sender(const QByteArray &array);
+
 
 public slots:
     void DoWork();
@@ -31,6 +33,7 @@ private:
     CURLcode res;
     std::string *response;
     QByteArray response_;
+    static NetworkManager *instance_;
 };
 
 #endif // NETWORKMANAGER_H

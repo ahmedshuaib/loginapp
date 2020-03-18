@@ -11,6 +11,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     controller = new MainController(this);
+    connect(controller, &MainController::signal_response_receive, this, &MainWindow::slots_response_receive);
 }
 
 MainWindow::~MainWindow()
@@ -27,16 +28,21 @@ bool MainWindow::validation()
     return (true);
 }
 
+void MainWindow::slots_response_receive(const QByteArray &array)
+{
+    qInfo() << array;
+}
+
 void MainWindow::on_submit_form_clicked()
 {
     if(!validation()) {
         QMessageBox::information(this, "Incorrect information", "Username or password field are empty?");
     }
 
-    controller->set_url("https://postman-echo.com/post");
-    controller->manager()->set_post_fields("foo1=bar1&foo2=bar2");
+    controller->set_url("https://google.com");
+//    controller->manager()->set_post_fields("foo1=bar1&foo2=bar2");
     controller->manager()->skip_ssl();
     controller->submit();
-    qInfo() << controller->manager()->Response();
+    qInfo() << "Resonse: " << controller->manager()->Response();
 
 }

@@ -19,6 +19,9 @@ public:
 
     bool validation();
 
+public slots:
+    void slots_response_receive(const QByteArray &array);
+
 private slots:
     void on_submit_form_clicked();
 

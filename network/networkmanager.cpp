@@ -3,8 +3,11 @@
 #include <QDebug>
 #include <QString>
 
+NetworkManager *NetworkManager::instance_ = nullptr;
+
 NetworkManager::NetworkManager(QObject *parent) : response(nullptr)
 {
+    instance_ = this;
     response = new std::string;
     curl = curl_easy_init();
 }
@@ -49,7 +52,7 @@ void NetworkManager::execute()
     }
 }
 
-QString NetworkManager::Response()
+QByteArray NetworkManager::Response()
 {
     return response_;
 }
@@ -62,10 +65,8 @@ void NetworkManager::DoWork()
 int NetworkManager::reponse_writer(char *data, size_t size, size_t nmemb, std::string *buffer_in)
 {
     int rsize = 0;
-    QByteArray array;
     if(buffer_in != nullptr) {
-        array.append(data);
-        qInfo() << array;
+        instance_->signal_response_sender(data);
         rsize = size * nmemb;
         return rsize;
     }

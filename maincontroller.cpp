@@ -7,6 +7,7 @@ MainController::MainController(QObject *parent) : QObject(parent)
     n_manager->moveToThread(&worker_thread);
     connect(&worker_thread, &QThread::finished, n_manager, &QObject::deleteLater);
     connect(this, &MainController::signal_do_work, n_manager, &NetworkManager::DoWork);
+    connect(n_manager, &NetworkManager::signal_response_sender, this, &MainController::signal_response_receive);
     worker_thread.start();
 }
 
