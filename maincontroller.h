@@ -19,6 +19,7 @@ public:
 
 signals:
     void signal_do_work();
+    void signal_response_receive(const QByteArray &array);
 
 public slots:
 
